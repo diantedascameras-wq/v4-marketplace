@@ -4,6 +4,7 @@ import CreatorMarketplace from './pages/CreatorMarketplace.jsx'
 import BrandDashboard from './pages/BrandDashboard.jsx'
 import CreatorProfile from './pages/CreatorProfile.jsx'
 import Analytics from './pages/Analytics.jsx'
+import Onboarding from './pages/Onboarding.jsx'
 
 /* ─── V4 Tokens (for switcher UI) ─── */
 const V4 = {
@@ -19,10 +20,11 @@ const V4 = {
 const FONT = `'IBM Plex Sans', -apple-system, sans-serif`
 
 const ROUTES = [
-  { path: '/creator', label: 'Dashboard Criador', short: 'Criador', icon: '🎨', desc: 'Deals disponíveis para criadores' },
-  { path: '/brand', label: 'Painel da Marca', short: 'Marca', icon: '🏢', desc: 'Gerenciar campanhas e candidaturas' },
-  { path: '/profile', label: 'Perfil Criador', short: 'Perfil', icon: '👤', desc: 'Portfólio, conquistas e histórico' },
-  { path: '/analytics', label: 'Analytics', short: 'Analytics', icon: '📊', desc: 'Métricas e gráficos de performance' },
+  { path: '/auth',      label: 'Onboarding / Login',  short: 'Entrar',    icon: '🚪', desc: 'Cadastro e login de criadores e marcas' },
+  { path: '/creator',   label: 'Dashboard Criador',   short: 'Criador',   icon: '🎨', desc: 'Deals disponíveis para criadores' },
+  { path: '/brand',     label: 'Painel da Marca',     short: 'Marca',     icon: '🏢', desc: 'Gerenciar campanhas e candidaturas' },
+  { path: '/profile',   label: 'Perfil Criador',      short: 'Perfil',    icon: '👤', desc: 'Portfólio, conquistas e histórico' },
+  { path: '/analytics', label: 'Analytics',           short: 'Analytics', icon: '📊', desc: 'Métricas e gráficos de performance' },
 ]
 
 /* ─── Floating Screen Switcher ─── */
@@ -31,18 +33,16 @@ function ScreenSwitcher() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
-  // Close on ESC
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const current = ROUTES.find(r => r.path === location.pathname) || ROUTES[0]
+  const current = ROUTES.find(r => r.path === location.pathname) || ROUTES[1]
 
   return (
     <>
-      {/* Floating trigger button */}
       <button
         onClick={() => setOpen(o => !o)}
         aria-label="Trocar de tela"
@@ -87,7 +87,6 @@ function ScreenSwitcher() {
         </span>
       </button>
 
-      {/* Overlay menu */}
       {open && (
         <>
           <div
@@ -121,7 +120,7 @@ function ScreenSwitcher() {
                 Navegação entre telas
               </div>
               <div style={{ fontSize: 12, color: V4.gray }}>
-                Esta é uma demo — troque entre as 4 views abaixo
+                Esta é uma demo — troque entre as 5 views abaixo
               </div>
             </div>
             {ROUTES.map(r => {
@@ -193,12 +192,13 @@ export default function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Navigate to="/creator" replace />} />
+        <Route path="/" element={<Navigate to="/auth" replace />} />
+        <Route path="/auth" element={<Onboarding />} />
         <Route path="/creator" element={<CreatorMarketplace />} />
         <Route path="/brand" element={<BrandDashboard />} />
         <Route path="/profile" element={<CreatorProfile />} />
         <Route path="/analytics" element={<Analytics />} />
-        <Route path="*" element={<Navigate to="/creator" replace />} />
+        <Route path="*" element={<Navigate to="/auth" replace />} />
       </Routes>
       <ScreenSwitcher />
     </>
